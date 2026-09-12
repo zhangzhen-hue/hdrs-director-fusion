@@ -109,7 +109,7 @@ metadata:
 
 模块只是一组功能语法。正式 AI 提示词优先输出可执行的摄影、调度和表演，不写“模仿某导演”。
 
-详见 [references/director-router.md](references/director-router.md)。
+六个功能模块的路由规则已在本文件中完整定义；研究来源见 [references/research-notes.md](references/research-notes.md)。
 
 ### Step 5：先调度，再摄影
 
@@ -199,7 +199,7 @@ metadata:
 - 付费后是否先兑现上一集承诺，再建立新奖励。
 - 关闭声音后，主要关系动作是否仍然大致可读。
 
-详见 [references/commercial-vertical-drama.md](references/commercial-vertical-drama.md)。
+详见 [references/vertical-drama.md](references/vertical-drama.md)。
 
 ### Step 10：编译 AI 视频执行稿
 
@@ -223,7 +223,7 @@ metadata:
 
 当项目使用 Seedance 时，遵守用户当前锁定的生成时长和参考图规则。若当前项目未给时长，不虚构平台上限。
 
-详见 [references/ai-video-compiler.md](references/ai-video-compiler.md)。
+详见 [references/ai-video-execution.md](references/ai-video-execution.md)。
 
 ### Step 11：Director Score
 
@@ -241,7 +241,7 @@ metadata:
 
 关系变化低于 15 / 20 时，默认重做场景结构，而不是只换镜头术语。
 
-详见 [references/qa-scorecard.md](references/qa-scorecard.md)。
+评分规则已在本节完整定义。
 
 ## Output Modes
 
@@ -333,7 +333,7 @@ HDRS 拆法：
 
 镜头任务不是拍三个人各自的表情，而是拍“家庭身份发生公开转移”。
 
-完整例子见 [examples/marriage-power-scene.md](examples/marriage-power-scene.md)。
+上面的婚姻权力示例就是本版本的最小运行样例。
 
 ## Edge Cases
 
@@ -366,13 +366,11 @@ HDRS 拆法：
 运行时按需读取：
 
 - [references/core-hdrs.md](references/core-hdrs.md)
-- [references/director-router.md](references/director-router.md)
 - [references/performance-and-trauma.md](references/performance-and-trauma.md)
 - [references/spatial-power-and-social-violence.md](references/spatial-power-and-social-violence.md)
 - [references/camera-axis-continuity.md](references/camera-axis-continuity.md)
-- [references/commercial-vertical-drama.md](references/commercial-vertical-drama.md)
-- [references/ai-video-compiler.md](references/ai-video-compiler.md)
-- [references/qa-scorecard.md](references/qa-scorecard.md)
+- [references/vertical-drama.md](references/vertical-drama.md)
+- [references/ai-video-execution.md](references/ai-video-execution.md)
 - [references/research-notes.md](references/research-notes.md)
 
 研究依据与外部资料只用于解释本 Skill 的设计来源，不应机械复制成镜头公式。
