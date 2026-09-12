@@ -24,22 +24,16 @@ hdrs-director-fusion/
 ├── SKILL.md
 ├── README.md
 ├── CHANGELOG.md
-├── references/
-│   ├── core-hdrs.md
-│   ├── director-router.md
-│   ├── performance-and-trauma.md
-│   ├── spatial-power-and-social-violence.md
-│   ├── camera-axis-continuity.md
-│   ├── commercial-vertical-drama.md
-│   ├── ai-video-compiler.md
-│   ├── qa-scorecard.md
-│   └── research-notes.md
-├── examples/
-│   └── marriage-power-scene.md
-├── tests/
-│   └── smoke-test.md
-└── scripts/
-    └── validate_skill.py
+├── LICENSE
+├── VERSION
+└── references/
+    ├── core-hdrs.md
+    ├── performance-and-trauma.md
+    ├── spatial-power-and-social-violence.md
+    ├── camera-axis-continuity.md
+    ├── vertical-drama.md
+    ├── ai-video-execution.md
+    └── research-notes.md
 ```
 
 ## 设计原则
@@ -58,17 +52,14 @@ hdrs-director-fusion/
 
 不同客户端的具体安装路径可能不同，以当前客户端文档为准。
 
-## 测试
+## 快速验证
 
-先跑 `tests/smoke-test.md` 的四个案例。
+可用以下四类场景检查 Skill 是否正常工作：
 
-也可以运行：
-
-```bash
-python scripts/validate_skill.py
-```
-
-该脚本只验证目录、frontmatter 和文件引用等静态结构，不证明导演质量。
+1. 礼貌型身份羞辱：能否把台词问题转成社会身份变化与空间调度。
+2. 创伤触发：能否用身体、声音和短记忆碎片表达，而不是直接长闪回。
+3. 冷静反杀：能否让力量来自人物决定与他人 Reaction，而不是英雄式仰拍。
+4. 跨生成单元连续性：能否继承站位、持物、伤势、门窗和已完成动作。
 
 ## 研究资料
 
