@@ -13,6 +13,6 @@
 - 海外女性向商业竖屏门
 - AI 视频双层编译结构
 - Director Score 100 分质检
-- 婚姻权力示例
-- Smoke Test
+- SKILL.md 内置婚姻权力最小示例
+- README 内置四类快速验证场景
 - 研究来源说明
