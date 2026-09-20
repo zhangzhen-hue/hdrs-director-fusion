@@ -1,0 +1,79 @@
+name: Restore exact HDRS v3 package
+
+on:
+  push:
+    paths:
+      - ".upload/hdrs-v3-direct/READY"
+
+permissions:
+  contents: write
+
+jobs:
+  restore:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Rebuild, verify, and restore package
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          B64=/tmp/hdrs_v3.b64
+          ZIP=/tmp/hdrs_v3.zip
+          UNPACK=/tmp/hdrs_v3_unpack
+          EXPECTED_SHA=5d29066dff580b813256d80c018c3938fcc6e826365bc83f54b67f81600d7fb0
+          EXPECTED_B64_BYTES=311792
+
+          : > "$B64"
+          for i in $(seq 1 32); do
+            n=$(printf "%03d" "$i")
+            f=".upload/hdrs-v3-direct/archive.b64.chunk$n"
+            test -f "$f"
+            cat "$f" >> "$B64"
+          done
+
+          actual_b64_bytes=$(wc -c < "$B64" | tr -d ' ')
+          test "$actual_b64_bytes" = "$EXPECTED_B64_BYTES"
+
+          base64 -d "$B64" > "$ZIP"
+          echo "$EXPECTED_SHA  $ZIP" | sha256sum -c -
+          unzip -t "$ZIP"
+
+          rm -rf "$UNPACK"
+          mkdir -p "$UNPACK"
+          unzip -q "$ZIP" -d "$UNPACK"
+
+          SRC="$UNPACK/video-storyboard-director-skill_HDRS生产整合版_v3.0"
+          TARGET="packages/video-storyboard-director-skill_HDRS生产整合版_v3.0"
+          test -d "$SRC"
+          test -f "$SRC/PACKAGE.md"
+          test -f "$SRC/LICENSE"
+
+          mkdir -p "$TARGET"
+          rsync -a --delete "$SRC/" "$TARGET/"
+
+          mkdir -p dist
+          cp "$ZIP" "dist/video-storyboard-director-skill_HDRS生产整合版_v3.0.zip"
+          cat > "dist/HDRS_v3.0_SHA256.txt" <<EOF
+          5d29066dff580b813256d80c018c3938fcc6e826365bc83f54b67f81600d7fb0  video-storyboard-director-skill_HDRS生产整合版_v3.0.zip
+          original_size_bytes=233843
+          base64_size_chars=311792
+          verification=sha256sum_and_unzip_test_passed
+          EOF
+
+          rm -rf .upload/hdrs-v3 .upload/hdrs-v3-exact .upload/hdrs-v3-final .upload/hdrs-v3-direct
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "Restore exact HDRS production integration v3.0"
+          git push
