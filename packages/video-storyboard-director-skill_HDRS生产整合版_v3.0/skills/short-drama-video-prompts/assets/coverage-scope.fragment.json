@@ -1,0 +1,14 @@
+{
+  "coverage_scope": {
+    "axis_side": "<read-only projection of accepted shot axis_side>",
+    "orientation": "<screen-left/screen-right relation readable from the accepted frame>",
+    "eyeline": "<accepted eyeline target or unresolved>",
+    "spatial_purpose": "<why this shot preserves or clarifies the current relationship geography>",
+    "do_not_infer": [
+      "new room dimensions",
+      "new entrances or exits",
+      "new prop geography",
+      "an axis crossing not accepted by storyboard"
+    ]
+  }
+}

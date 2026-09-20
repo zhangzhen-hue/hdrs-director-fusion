@@ -1,0 +1,4 @@
+name: short-drama-video-prompts
+description: Compile accepted short-drama directing decisions into production-safe AI video execution prompts, motion specs, continuity checks, and model-facing delivery text.
+version: 3.0.0
+entrypoint: SKILL.md
