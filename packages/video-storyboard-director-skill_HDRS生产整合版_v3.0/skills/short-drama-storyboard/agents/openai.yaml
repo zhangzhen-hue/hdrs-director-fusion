@@ -1,0 +1,6 @@
+interface:
+  display_name: "短剧分镜"
+  short_description: "把剧本编译成关系驱动、状态可交接的正式分镜"
+  default_prompt: "使用 $short-drama-storyboard，把已接受剧本和资产拆成关系变化清楚、观众信息可读、物理状态连续的镜头与冻结关键帧。"
+policy:
+  allow_implicit_invocation: true

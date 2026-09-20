@@ -1,4 +1,6 @@
-name: short-drama-video-prompts
-description: Compile accepted short-drama directing decisions into production-safe AI video execution prompts, motion specs, continuity checks, and model-facing delivery text.
-version: 3.0.0
-entrypoint: SKILL.md
+interface:
+  display_name: "短剧视频提示词"
+  short_description: "把分镜降维成中文可直投的AI视频提示词"
+  default_prompt: "使用 $short-drama-video-prompts，根据已接受镜头、余波和关键帧，编写状态连续、声音正确且可直接投喂目标模型的视频提示词。"
+policy:
+  allow_implicit_invocation: true

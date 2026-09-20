@@ -1,14 +1,21 @@
 {
   "coverage_scope": {
-    "axis_side": "<read-only projection of accepted shot axis_side>",
-    "orientation": "<screen-left/screen-right relation readable from the accepted frame>",
-    "eyeline": "<accepted eyeline target or unresolved>",
-    "spatial_purpose": "<why this shot preserves or clarifies the current relationship geography>",
-    "do_not_infer": [
-      "new room dimensions",
-      "new entrances or exits",
-      "new prop geography",
-      "an axis crossing not accepted by storyboard"
-    ]
+    "mode": "pickup | alternate",
+    "master_motion_id": "MOTION-<master-id>",
+    "supplements_motion_ids": [
+      "MOTION-<same-file-record-id>"
+    ],
+    "source_obligations": [
+      {
+        "kind": "action | reaction | dialogue | reveal | directive | end_boundary",
+        "source_ref": {
+          "src": "screenplay-index",
+          "record_id": "BLK-<EP>-<SC>-<kind><nn>"
+        },
+        "disposition": "covered_now | retained_in_master | separate_pickup | requires_storyboard_revision",
+        "motion_field": "/<current-motion-field-or-none>"
+      }
+    ],
+    "replacement_intent": "does_not_replace_master | requests_supersession"
   }
 }

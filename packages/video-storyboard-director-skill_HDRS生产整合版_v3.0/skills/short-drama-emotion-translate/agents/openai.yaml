@@ -1,0 +1,6 @@
+interface:
+  display_name: "短剧情绪放大转译"
+  short_description: "将关系变化转成可拍表演、运镜与连续余波"
+  default_prompt: "使用 $short-drama-emotion-translate，在不改剧情和台词的前提下，把这场戏组织成有刺激、接收、选择、反作用、关系变化与余波的可拍情绪流。"
+policy:
+  allow_implicit_invocation: true

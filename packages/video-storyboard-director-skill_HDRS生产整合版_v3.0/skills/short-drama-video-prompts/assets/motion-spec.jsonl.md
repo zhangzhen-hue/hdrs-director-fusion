@@ -7,10 +7,13 @@
 也在这里声明。
 
 ```jsonl
-{"record_type":"sources","schema_version":"1.0.0","sources":{"shots":{"owner":"short-drama-storyboard","artifact":"剧集/<EP>/storyboard/shots.jsonl"},"characters":{"owner":"short-drama-assets","artifact":"剧集/<EP>/assets/characters.jsonl"},"screenplay-index":{"owner":"short-drama-write","artifact":"剧集/<EP>/screenplay-index.jsonl"}}}
+{"record_type":"sources","schema_version":"1.0.0","sources":{"shots":{"owner":"short-drama-storyboard","artifact":"剧集/<EP>/storyboard/shots.jsonl"},"keyframes":{"owner":"short-drama-storyboard","artifact":"剧集/<EP>/storyboard/keyframes.jsonl"},"screenplay-index":{"owner":"short-drama-write","artifact":"剧集/<EP>/screenplay-index.jsonl"},"characters":{"owner":"short-drama-assets","artifact":"设定集/characters.jsonl"},"short-drama":{"owner":"creator","artifact":"short-drama.json"}}}
 ```
 
-其后每行一个运动规格记录；同一 `shot_ref` 只写一条运动规格，所有引用都用文件头声明的 `src`：
+其后每行一个候选运动规格对象。引用写 `src` 加它指向的记录 `record_id` 或字段 `field`；
+`boundary_refs` 只读，候选状态属于本运动规格，不向已经接受的上游引用传播。不要加入
+`duration_override`、`end_override` 或 `next_shot_write`。以下字符串只说明怎样填写，
+不是固定答案。
 
 ```json
 {
@@ -20,65 +23,190 @@
     "src": "shots",
     "record_id": "SHOT-<id>"
   },
-  "accepted_duration_ref": {
-    "src": "shots",
-    "record_id": "SHOT-<id>",
-    "field": "/duration_seconds"
+  "keyframe_ref": {
+    "src": "keyframes",
+    "record_id": "KEY-<id>"
   },
-  "accepted_duration": "<从 accepted_duration_ref 读到的值，投影不改写>",
-  "direction": "<relative frame direction; if a subject-self direction is needed, name the subject explicitly>",
-  "axis_side_ref": {
-    "src": "shots",
-    "record_id": "SHOT-<id>",
-    "field": "/axis_side"
+  "production_profile_ref": {
+    "src": "short-drama",
+    "field": "/creator_authority/production_profile"
   },
-  "start_boundary_ref": {
-    "src": "shots",
-    "record_id": "SHOT-<id>",
-    "field": "/start_boundary"
+  "boundary_refs": {
+    "duration": {
+      "src": "shots",
+      "record_id": "SHOT-<id>",
+      "field": "/duration_seconds",
+      "value_seconds": 0.0
+    },
+    "start": {
+      "src": "shots",
+      "record_id": "SHOT-<id>",
+      "field": "/start_boundary"
+    },
+    "end": {
+      "src": "shots",
+      "record_id": "SHOT-<id>",
+      "field": "/end_boundary"
+    },
+    "next_start": {
+      "src": "shots",
+      "record_id": "SHOT-<next-id>",
+      "field": "/start_boundary",
+      "access": "comparison_only"
+    }
   },
-  "end_boundary_ref": {
-    "src": "shots",
-    "record_id": "SHOT-<id>",
-    "field": "/end_boundary"
+  "reference_bindings": [
+    {
+      "slot_id": "REF-<stable-slot>",
+      "order": 1,
+      "artifact_ref": {
+        "src": "keyframes",
+        "record_id": "KEY-<id>"
+      },
+      "role": "start_frame",
+      "may_control": [
+        "<本镜 accepted 起始构图与可见状态>"
+      ],
+      "must_not_control": [
+        "<尚未发生的动作/终态/无权威文字>"
+      ],
+      "admission_status": "unverified | creator_described | visually_inspected",
+      "reference_observation_ref": null,
+      "unresolved_risks": [
+        "<没有观察证据时保留的文字/水印/裁切风险>"
+      ]
+    }
+  ],
+  "start_anchor": {
+    "pose_balance": "<仅运动必需>",
+    "gaze": "<目标>",
+    "hands": {
+      "left": "<状态>",
+      "right": "<状态>"
+    },
+    "held_props": [
+      "<exact binding + hand>"
+    ],
+    "spatial_relations": [
+      "<与行动对象的关系>"
+    ]
   },
-  "primary_action": "<单镜主要动作变化；必须落到 end boundary>",
-  "secondary_reaction": "<可选，最多一项；没有就删除>",
-  "camera_intent": "<单一主要运镜职责；无触发时写 fixed/locked intent，不额外加装饰运动>",
-  "camera_movement": "<push | pull | pan | track | arc | handheld | locked；只能是已接受 camera_intent 的执行投影>",
-  "motion_amount": "<small | medium | large；本镜动作/运镜体量，不改写剧情强度>",
-  "event_cue": "<触发主运动的剧情事件或可见/可听信号>",
-  "continuity_in_ref": {
-    "src": "shots",
-    "record_id": "SHOT-<id>",
-    "field": "/start_boundary"
+  "ordered_subject_motion": [
+    {
+      "order": 1,
+      "actor": "<asset binding>",
+      "trigger": "<accepted cue>",
+      "action": "<可见动作>",
+      "direction_or_path": "<方向/路径>",
+      "object_or_contact": "<对象/接触>",
+      "result": "<阶段结果>",
+      "timing": {
+        "mode": "relative | explicit",
+        "value": "<顺序词或秒区间>"
+      }
+    }
+  ],
+  "camera": {
+    "behavior": "locked | move | transition",
+    "motivation": "reveal | pressure | alignment | relationship | transition | deliberate_stillness",
+    "intervals": [
+      {
+        "range": "<相对阶段或秒区间>",
+        "mode": "<lock/pan/tilt/dolly/handheld/follow>",
+        "path_tempo": "<方向/节奏>",
+        "endpoint": "<在 accepted framing/boundary 内>"
+      }
+    ]
   },
-  "continuity_out_ref": {
-    "src": "shots",
-    "record_id": "SHOT-<id>",
-    "field": "/end_boundary"
+  "environment_motion": [
+    {
+      "element": "<已有环境元素>",
+      "motion": "<有剧情意义的变化>",
+      "cause": "<连续性/主体动作>"
+    }
+  ],
+  "audio": [
+    {
+      "source_ref": {
+        "src": "screenplay-index",
+        "record_id": "BLK-<EP>-<SC>-D<nn>"
+      },
+      "speaker_ref": {
+        "src": "characters",
+        "record_id": "CHAR-<id>"
+      },
+      "voice_direction_ref": {
+        "src": "characters",
+        "record_id": "CHAR-<id>",
+        "field": "/voice_direction"
+      },
+      "kind": "dialogue | VO | OS | SFX | ambience | music",
+      "exact_text": "<仅 source 有文本时逐字引用>",
+      "delivery_or_spatial_intent": "<不改文本的表演/声源/层级>",
+      "timing": "<相对阶段或秒区间>"
+    }
+  ],
+  "timing_plan": {
+    "mode": "relative | explicit",
+    "phases": [
+      "<阶段、overlap 与 landing 空间>"
+    ],
+    "declares_overlap": false,
+    "declared_total_or_endpoint_seconds": 0.0
   },
-  "performance_ref": "<可选：同记录 performance_arcs[] 的 actor_ref/trigger_ref 组合；没有就删除>",
-  "attention_handoff_ref": "<可选：同记录 attention_handoffs[] 中对应的 from_ref/trigger_ref/to_ref；没有就删除>",
-  "coverage_scope": "<可选：同记录 coverage_scope.fragment.json 的 side/orientation；不改变 axis_side>",
-  "unresolved": [],
-  "provenance": "storyboard_projection"
+  "end_report": {
+    "projection": {
+      "pose": "<reported>",
+      "position": "<reported>",
+      "gaze": "<reported>",
+      "hands": "<reported>",
+      "held_props": "<reported>",
+      "visible_state": "<reported>"
+    },
+    "comparison": "match | mismatch | unrealized",
+    "differences": []
+  },
+  "reference_frame_economy": {
+    "frame_carries": [
+      "appearance",
+      "composition",
+      "base lighting"
+    ],
+    "repeated_for_motion_only": [
+      "<hand/prop/path 等必要局部>"
+    ]
+  },
+  "creator_overrides": [
+    {
+      "rule_id": "<VID-*>",
+      "choice": "<覆盖>",
+      "rationale": "<理由>"
+    }
+  ],
+  "generic_prompt": "<把本规格渲染成一段只含要拍出来的画面的交付文本：从已接受起点的姿态与持物说起，逐条写动作、接触、摄影机行为与终点状态；不写镜头/记录 ID、规则 ID、状态词、工艺备注与成段否定罗列；写满的样子见 references/production-prompt-grammar.md>",
+  "derivation": {
+    "recipe_version": "<version>"
+  },
+  "provenance": "creator_project"
 }
 ```
 
-## 结构校验点
 
-每条运动规格在落盘时满足以下条件；这是 `VID-12` 的本地可证部分：
+运动规格**不带指回交付容器的引用**。依赖方向只有一条：容器 → 运动规格 → 镜头。两端在各自
+`sources` 里互相声明对方会形成环——依赖方向必须单向，
+永远得不到可发布的稳定快照。要找某个镜头属于哪个容器，从容器记录的 `members[]` 反查，不在本文件里
+存副本。容器记录见 [delivery-container.jsonl.md](delivery-container.jsonl.md)。
 
-1. `shot_ref`、`accepted_duration_ref`、`axis_side_ref`、`start_boundary_ref`、`end_boundary_ref`、
-   `continuity_in_ref`、`continuity_out_ref` 都指向**同一条**镜头记录；
-2. `accepted_duration` 与 `accepted_duration_ref` 解析到的镜头 `duration_seconds` 一致；
-3. `continuity_in_ref == start_boundary_ref`，`continuity_out_ref == end_boundary_ref`；
-4. `camera_movement` 只作为 `camera_intent` 的可执行投影，不得反向创造未接受运镜；
-5. `motion_amount` 是执行体量，不得替代剧情、情绪或权力变化的上游依据；
-6. `primary_action` 与最多一个 `secondary_reaction` 能在 `accepted_duration` 内完成；放不下时请求拆镜；
-7. `event_cue` 必须来自已接受的剧情事件、动作触发、对白/声音触发或关系变化；没有触发时运镜保持 `locked`；
-8. `unresolved` 非空时记录仍可保存为 candidate，但不得通过最终生成就绪 gate；
-9. `sources` 头里每个被引用 key 只声明一次，且同 key 不得指向两个不同快照。
+默认 master 不重复 `purpose_ref` 或 `coverage_scope`：镜头目的、场次计划与原文覆盖从准确
+`shot_ref` 及其上游读取。只有 pickup/alternate 才按
+[motion-recipe.md](../references/motion-recipe.md) 增加 `coverage_scope`，记录相对母版的补充、保留与去向。
+`boundary_refs` 只保留结构校验需要的 duration/start/end/next-start 精确字段投影，不再重复镜头目的、
+场次计划或原文职责；删除它前必须先让 timing 与 continuity 校验器能从 `shot_ref` 安全解析同一快照。
 
-这些检查和容器检查互补：运动规格证明“本镜怎么动”，容器只证明“哪些已接受镜头装在一起”。
+普通记录省略 `performance_arcs[]` 与 `attention_handoffs[]`；存在可见表演变化或注意交接时，按
+[`performance.fragment.json`](performance.fragment.json) 插入完整字段。空镜、道具细节、纯空间
+转场和只有物理动作的镜头不编造 arc。多参考的 `slot_id` 稳定且 `order` 唯一。
+`reported_end` 只作比较；末镜没有真实下一镜时改用
+`next_start_locator`。附加参考为空时使用空数组；对白说话者与声音方向只有在已接受引用存在时才填写。
+母版、补拍和替代关系保留在同一规格文件内，替代决定由审查结论拥有。具体取舍按
+`references/motion-recipe.md` 与 `references/review-and-fixtures.md` 判断。
